@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__ADMIN__/lib/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__ADMIN__/lib/eleTree/eleTree.css" media="all">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon.ico">
+  <script src="__ADMIN__/lib/layui/layui.js" charset="utf-8"></script>
+  <script src="__ADMIN__/js/jquery.min.js" charset="utf-8"></script>
+  <style>
+    #add_c{
+      width: 100px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      background: #009688;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .del_c{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .del_color{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .add_color{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .filestyle{
+      position: relative;
+      width: 188px;
+      height: 38px;
+      background-color: #009688;
+    }
+    .filestyle>span{
+      color:#fff;
+      font-size: 20px;
+      text-align: center;
+      line-height: 38px;
+      width: 188px;
+      display: inline-block;
+    }
+    .filestyle>input{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 188px;
+      height: 38px;
+      opacity: 0;
+    }
+    .layui-form-label{
+      width:150px;
+    }
+    .input_All_n{
+      width: 60px;
+      display:inline-block;
+      margin-right: 5px;
+    }
+    .input_All_c{
+      width: 100px;
+      display:inline-block;
+      margin-right: 25px;
+    }
+    .mar_l{
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-row">
+    <form id="file" class="layui-form" enctype="multipart/form-data" method="post">
+      <input type="hidden" name="gid" value="{$gid}" >
+      <div class="layui-form-item">
+        <label for="username" class="layui-form-label">
+          <span class="x-red">*</span>规格
+        </label>
+        <div class="layui-input-inline">
+          <div id="add_c">添加规格</div>
+        </div>
+      </div>
+      <!-- 输入规格 颜色 库存 -->
+      <div id="add_forcolor"></div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <button class="layui-btn" lay-filter="add" id="testListAction" lay-submit="">增加</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script language="javascript">
+    //随机字符串
+    function randomString(len) {
+        len = len || 32;
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+
+    //获取class中的随机数
+    function getClass(ele){
+        // 获取当前节点的随机class
+        var arr=[];
+        var str=ele.attributes.class.textContent;//可以用字符或字符串分割
+        arr=str.split(' ');
+        return arr[0];
+    }
+
+    //判断数组中是否有值
+    function isArray(arr){
+        if(!$.isArray(arr)){
+            return false;
+        }else if(arr.length<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
+
+<script>
+    var carr=[];
+
+    $('#add_c').click(function (){
+        var cnum=carr.length;
+        var suiji=randomString(16);
+        $("#add_forcolor").append('<div class="layui-form-item forcolor" style="margin-left: 178px;display: inline-block">' +
+            '<div class="layui-input-inline" style="float:none;width:auto;">' +
+            '<div onclick="add_color(this)" class="'+suiji+' add_color">添加颜色</div>' +
+            '</div>' +
+            '<div class="color_input" style="display: inline">' +
+            '<input type="text" name="color" required value="" class="layui-input input_All_c '+suiji+'" placeholder="规格">' +
+            '<input type="text" name="price" required value="" class="layui-input input_All_c '+suiji+'" placeholder="单价">' +
+            '<span class="x-red">*</span><span style="margin-right: 10px">输入颜色和相对应的库存</span>' +
+            '<div class="acolor" style="display: inline-block">' +
+            '<span class="mar_l"><input type="text" name="color" required placeholder="颜色" class="layui-input input_All_n '+suiji+'">: </span>' +
+            '<input type="text" required  name="num" placeholder="库存" class="layui-input input_All_n '+suiji+'">' +
+            '</div>' +
+            '</div>' +
+            '<div class="layui-input-inline" style="float:none" ><div onclick="del_color(this)" class="'+suiji+' del_color">删除颜色</div>' +
+            '<div class="layui-input-inline" style="float:none;margin-top: 2px" ><div onclick="del_c(this)" class="del_c">删除规格</div></div></div>');
+        carr[cnum]=suiji;
+    });
+
+    function add_color(ob){
+
+        var addEle=$('.add_color');
+        var num=addEle.length;
+        for(var i=0; i<num; i++){
+            if(ob===addEle[i]){
+                // 获取当前节点的随机class
+                var classStr=getClass(addEle[i]);
+
+                // 追加节点
+                $('.color_input').eq(i).append('' +
+                    '<div class="acolor" style="display: inline-block">' +
+                    '<span class="mar_l"><input type="text" name="color" required placeholder="颜色" class="layui-input input_All_n '+classStr+'">: </span>' +
+                    '<input type="text" required  name="num" placeholder="库存" class="layui-input input_All_n '+classStr+'">' +
+                    '</div>');
+            }
+        }
+    }
+
+    function del_c(ob){
+        //获取所有的要删除信息的节点
+        var delEle=$('.del_c');
+        carr_num=carr.length;
+        for (var i = 0; i < carr_num; i++) {
+            //判断被选中的信息
+            if (ob===delEle[i]) {
+                //删除被选中的信息
+                $('.forcolor').eq(i).remove();
+                //删除数组中被删除数据的单元
+                carr.splice(i,1);
+            }
+        }
+    }
+
+    function del_color(ob){
+        //获取所有的要删除信息的节点
+        var delEle=$('.del_color');
+        carr_num=carr.length;
+        for (var i = 0; i < carr_num; i++) {
+            //判断被选中的信息
+            if (ob===delEle[i]) {
+                var classStr=getClass(delEle[i]);
+
+                var suijiob=$('.'+classStr);
+                var ii=suijiob.length;
+                if(ii<=6){
+                    layer.msg("至少保留一个颜色!");
+                }else{
+                    //删除节点
+                    suijiob.eq(ii-2).parent('.acolor').remove();
+                }
+            }
+        }
+    }
+
+
+    layui.config({
+        base: "__ADMIN__/lib/layui/lay/mymodules/"
+    }).use(['jquery','table','eleTree','code','form','slider'], function(){
+        var $ = layui.jquery;
+        var eleTree = layui.eleTree;
+        var table = layui.table;
+        var code = layui.code;
+        var form = layui.form;
+        var slider = layui.slider;
+
+        $("#file").on("submit",function(){
+            //阻止form默认提交
+            var evt = event;
+            evt.preventDefault();
+            //得到formData
+            var formData = new FormData($(this)[0]);
+            //判断是否添加数据
+            if(!isArray(carr)){
+                layer.msg("未添加规格!");
+                return false;
+            }
+            //获取规格 库存 单价数据并整理
+            var carrlen=carr.length;
+            var fData=[];
+            for(var i=0; i<carrlen; i++){
+                var cData=[];
+                var cele=$('input.'+carr[i]);
+                var clen=cele.length;
+                for(var j=0; j<clen; j++){
+                    cData[j]=cele.eq(j).val();
+                }
+                fData[i]=cData;
+            }
+            fDatalen=fData.length;
+            for(var i=0; i<fDatalen; i++){
+                //将数据绑定到formData
+                formData.append("fData[" + i + "]",fData[i]);
+            }
+
+            $.ajax({
+                url:"{:url('admin/good/good_details_toadd')}",
+                type:"post",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data:formData,
+                success:function(data){
+                    console.log(data);
+                    if (data==1) {
+                        layer.alert("增加成功!", {icon: 6},function () {
+                            //获得frame索引
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // var indexs = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            parent.layer.close(index);
+                            // parent.parent.layer.close(indexs);
+                            parent.parent.location.replace(location.href="{:url('admin/good/good_list')}");
+                        });
+                    }else if(data==0){
+                        layer.alert("增加失败!", {icon: 5});
+                    }else{
+                        layer.alert("上传错误:"+data, {icon: 5});
+                    }
+                }
+            })
+        })
+    });
+</script>
+</body>
+</html>

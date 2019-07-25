@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="__ADMIN__/css/font.css">
+    <link rel="stylesheet" href="__ADMIN__/css/xadmin.css">
+    <script type="text/javascript" src="__ADMIN__/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="__ADMIN__/js/xadmin.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="__CITY__/xcity.js"></script >
+    <script type="text/javascript" src="__CITY__/guige.js"></script >
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" id="myform">
+            <input type="hidden" name="id" value="{$id}" >
+            <div class="layui-form-item">
+                <label for="state" class="layui-form-label">
+                    <span class="x-red">*</span>订单状态
+                </label>
+                <div class="layui-input-inline" style="width: auto;">
+                    <div class="layui-input-inline" style="width:160px">
+                        <select name="state" id="state">
+                            <option value="1" {if $data.state=="1"}selected{/if}>未发货</option>
+                            <option value="2" {if $data.paystate=="1"}disabled{/if} {if $data.state=="2"}selected{/if}>已发货</option>
+                            <option value="3" {if $data.paystate=="1"}disabled{/if} {if $data.state=="3"}selected{/if}>已签收</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>规格
+                </label>
+                <div class="layui-input-inline" style="width: auto;">
+                    <div class="layui-input-inline x-guige" id="guige" style="width: auto;">
+                        <div class="layui-input-inline" style="width:130px">
+                            <select name="size" lay-filter="size" id="size-input"></select>
+                        </div>
+                        <div class="layui-input-inline" style="width:130px">
+                            <select name="color" lay-filter="color" id="color-input"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="num" class="layui-form-label">
+                    <span class="x-red">*</span>数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="num" name="num" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="{$data.num}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="total" class="layui-form-label">
+                    <span class="x-red">*</span>价格
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="total" name="total" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" readonly value="{$data.total}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="user" class="layui-form-label">
+                    <span class="x-red">*</span>收件人
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="user" name="user" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="{$data.user}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="phone" class="layui-form-label">
+                    <span class="x-red">*</span>电话
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="phone" name="phone" required="" lay-verify="required|phone"
+                           autocomplete="off" maxlength="11" class="layui-input" value="{$data.phone}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>地址
+                </label>
+                <div class="layui-input-inline x-city" id="start" style="width: auto;">
+                    <div class="layui-input-inline" style="width:130px">
+                        <select name="province" lay-filter="province"></select>
+                    </div>
+                    <div class="layui-input-inline" style="width:130px">
+                        <select name="city" lay-filter="city"></select>
+                    </div>
+                    <div class="layui-input-inline" style="width:130px">
+                        <select name="area" lay-filter="area"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="detail" class="layui-form-label">
+                    <span class="x-red">*</span>详细地址
+                </label>
+                <div class="layui-input-inline" style="width: 72%;">
+                    <textarea id="detail" required name="detail" lay-verify="required" placeholder="请输入详细地址" class="layui-textarea">{$data.address.detail}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="content" class="layui-form-label">
+                    <span class="x-red">*</span>备注
+                </label>
+                <div class="layui-input-inline" style="width: 72%;">
+                    <textarea id="content" name="content"  class="layui-textarea">{$data.content}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <button  class="layui-btn" lay-filter="add" lay-submit="">
+                    修改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+    <script>
+
+        layui.use(['form', 'layer','code'],function() {
+                $ = layui.jquery;
+                form = layui.form;
+                layer = layui.layer;
+
+                layui.code();
+                $.ajax({
+                    url: "{:url('admin/orders/order_get_edit')}",
+                    method: "GET",
+                    data: {gid:'{$data.gid}'},
+                    success: function (data){
+                        // console.log(data);
+                        sizeList=data;
+                        $('#guige').guige('{$data.sid}','{$data.cid}');
+                    }
+                });
+
+                $('#start').xcity('{$data.address.address[0]}','{$data.address.address[1]}','{$data.address.address[2]}');
+                // $('#end').xcity('广东','广州市','东山区');
+
+            //监听提交
+            $("#myform").on("submit",function(){
+                //阻止form默认提交
+                var evt = event;
+                evt.preventDefault();
+                //得到formData
+                var formData = new FormData($(this)[0]);
+                // console.log(formData);
+                $.ajax({
+                    url:"{:url('admin/orders/order_toedit')}",
+                    type:"post",
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data:formData,
+                    success:function(data){
+                        // console.log(data);
+                        if (data==1) {
+                            layer.msg("修改成功!", {icon: 6,time:1000},function () {
+                                //获得frame索引
+                                var index = parent.layer.getFrameIndex(window.name);
+                                //关闭当前frame
+                                parent.layer.close(index);
+                                parent.location.replace(location.href="{:url('admin/orders/order_list')}");
+                            });
+                        }else if(data==0){
+                            layer.msg("修改失败!", {icon: 5,time:1000});
+                        }
+                    }
+                })
+            });
+
+                $("#num").change(function(){
+                    var num=parseInt($(this)[0].value);
+
+                    $('#total')[0].value=num*price;
+
+                    if(isNaN($(this)[0].value)){
+                        $(this)[0].value=1;
+                        $('#total')[0].value=price;
+                    }
+                });
+
+            });
+    </script>
+</body>
+
+</html>

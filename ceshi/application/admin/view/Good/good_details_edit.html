@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__ADMIN__/lib/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="__ADMIN__/lib/eleTree/eleTree.css" media="all">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon.ico">
+  <script src="__ADMIN__/lib/layui/layui.js" charset="utf-8"></script>
+  <script src="__ADMIN__/js/jquery.min.js" charset="utf-8"></script>
+  <style>
+    #add_c{
+      width: 100px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      background: #009688;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .del_c{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    #del_color{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .add_color{
+      width: 50px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      background: #009688;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .filestyle>span{
+      color:#fff;
+      font-size: 20px;
+      text-align: center;
+      line-height: 38px;
+      width: 188px;
+      display: inline-block;
+    }
+    .filestyle>input{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 188px;
+      height: 38px;
+      opacity: 0;
+    }
+    .layui-form-label{
+      width:150px;
+    }
+    .input_All_n{
+      width: 60px;
+      display:inline-block;
+      margin-right: 5px;
+    }
+    .input_All_c{
+      width: 100px;
+      display:inline-block;
+      margin-right: 25px;
+    }
+    .mar_l{
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-row">
+    <form id="file" class="layui-form" enctype="multipart/form-data" method="post">
+
+      <input type="hidden" name="sid" value="{$id}" >
+      <!-- 输入规格 颜色 库存 -->
+      <div>
+        <div class="layui-form-item">
+          <div class="layui-input-inline" style="float:none;width:auto;">
+            <div onclick="add_color(this)" id="add_color" class="add_color">添加颜色</div>
+          </div>
+          <div id="color_input" style="display: inline">
+            <input type="text" name="size" required value="{$datas.name}" class="layui-input input_All_c" placeholder="规格">
+            <input type="text" name="price" required value="{$datas.price}" class="layui-input input_All_c" placeholder="单价">
+            <span class="x-red">*</span><span style="margin-right: 10px">输入颜色和相对应的库存</span>
+            {foreach $datac as $v}
+            <div class="acolor" style="display: inline-block">
+              <span class="mar_l"><input type="text" name="color[]" required placeholder="颜色" class="layui-input input-color input_All_n" value="{$v.name}">: </span>
+              <input type="text" required  name="num[]" value="{$v.num}" placeholder="库存" class="layui-input input-num input_All_n">
+            </div>
+            {/foreach}
+          </div>
+          <div class="layui-input-inline" style="float:none" >
+            <div onclick="del_color(this)" id="del_color">删除颜色</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 42px;"></label>
+        <button class="layui-btn" lay-filter="add" id="testListAction" lay-submit="">修改</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script language="javascript">
+    //随机字符串
+    function randomString(len) {
+        len = len || 32;
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+
+    //获取class中的随机数
+    function getClass(ele){
+        // 获取当前节点的随机class
+        var arr=[];
+        var str=ele.attributes.class.textContent;//可以用字符或字符串分割
+        arr=str.split(' ');
+        return arr[0];
+    }
+
+    //判断数组中是否有值
+    function isArray(arr){
+        if(!$.isArray(arr)){
+            return false;
+        }else if(arr.length<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
+
+<script>
+    function add_color(ob){
+        var addEle=$('#add_color');
+          // 获取当前节点的随机class
+          // var classStr=getClass(addEle);
+
+          // 追加节点
+          $('#color_input').append('' +
+              '<div class="acolor" style="display: inline-block">' +
+              '<span class="mar_l"><input type="text" name="color[]" required placeholder="颜色" class="layui-input input-color input_All_n">: </span>' +
+              '<input type="text" required  name="num[]" placeholder="库存" class="layui-input input-num input_All_n">' +
+              '</div>');
+    }
+
+
+    function del_color(ob){
+        //获取所有的要删除信息的节点
+        var colorEle=$('.input-num');
+        // console.log(colorEle.length);
+        var clen=colorEle.length-1;
+        console.log(clen);
+        console.log(colorEle.eq(clen).parent('.acolor'));
+        if(clen<=0){
+            layer.msg("至少保留一个颜色!");
+        }else{
+            //删除节点
+            colorEle.eq(clen).parent('.acolor').remove();
+        }
+    }
+
+
+    layui.config({
+        base: "__ADMIN__/lib/layui/lay/mymodules/"
+    }).use(['jquery','table','eleTree','code','form','slider'], function(){
+        var $ = layui.jquery;
+        var eleTree = layui.eleTree;
+        var table = layui.table;
+        var code = layui.code;
+        var form = layui.form;
+        var slider = layui.slider;
+
+        $("#file").on("submit",function(){
+
+
+            //阻止form默认提交
+            var evt = event;
+            evt.preventDefault();
+            //得到formData
+            var formData = new FormData($(this)[0]);
+
+            $.ajax({
+                url:"{:url('admin/good/good_details_toedit')}",
+                type:"post",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data:formData,
+                success:function(data){
+                    console.log(data);
+                    // alert(1);
+                    // console.log(data);
+                    //alert(data);
+                    if (data==1) {
+                        layer.alert("修改成功!", {icon: 6},function () {
+                            //获得frame索引
+                            var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            parent.layer.close(index);
+                            parent.parent.location.replace(location.href="{:url('admin/good/good_list')}");
+                        });
+                    }else if(data==0){
+                        layer.alert("修改失败!", {icon: 5});
+                    }else{
+                        layer.alert("上传错误:"+data, {icon: 5});
+                    }
+                }
+            })
+        })
+    });
+</script>
+</body>
+</html>
