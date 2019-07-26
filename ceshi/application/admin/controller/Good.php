@@ -672,6 +672,7 @@ class Good extends Controller
 		$type=$Type->typeget($data['typeid']);
 		$this->assign('type',$type['name']);
 		$this->assign('data',$data);
+
 		return $this->fetch();
 	}//end 加载商品修改页--------------------------------------------------------------------------------------
 
@@ -681,8 +682,18 @@ class Good extends Controller
 		$Goods=new Goods;
 		$Goodc=new Goodc;
 
+		$data=input('post.');
+		$edit_data['name']=$data['name'];
+		$edit_data['typeid']=$data['typeid'];
+		$edit_data['content']=$data['desc'];
+		$where['id']=$data['id'];
+		$res=$Good->good_edit($edit_data,$where);
+		if($res!==false){
+			return 1;
+		}else{
+			return 0;
+		}
 
-		return 1;
 	}//end 执行商品修改操作--------------------------------------------------------------------------------------
 
 	//执行商品状态修改操作

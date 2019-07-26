@@ -73,6 +73,7 @@
                                     <tr>
                                         <th>添加时间</th>
                                         <th>商品名</th>
+                                        <th>类别</th>
                                         <th>商品图</th>
                                         <th>商品详情图</th>
                                         <th>商品详情</th>
@@ -88,6 +89,13 @@
                                     <tr>
                                         <td>{$v.addtime}</td>
                                         <td>{$v.name}</td>
+                                        <td>
+                                            {foreach $type as $t}
+                                            {if $t.id==$v.typeid}
+                                            {$t.name}
+                                            {/if}
+                                            {/foreach}
+                                        </td>
                                         <td><img style="cursor: pointer;" onclick="xadmin.open('商品图片','{:url(\'admin/good/goodpic_list\')}?id={$v.id}')" src="__GOOD__/{$v.goodpic[0]}" alt="" ></td>
                                         <td><img style="cursor: pointer;" onclick="xadmin.open('商品详情图片','{:url(\'admin/good/detailpic_list\')}?id={$v.id}')" src="__DETAILGOOD__/{$v.detailpic[0]}" alt="" ></td>
                                         <td><a href="javascript:;" onclick="xadmin.open('商品详情','{:url(\'admin/good/good_details\')}?id={$v.id}',800,600)" >查看</a ></td>

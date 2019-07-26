@@ -29,7 +29,7 @@
 <div class="layui-fluid">
 	<div class="layui-row">
 		<form id="file" class="layui-form" enctype="multipart/form-data" method="post">
-
+			<input type="hidden" name="id" value="{$data.id}" >
 			<div class="layui-form-item">
 				<label for="type" class="layui-form-label">
 					<span class="x-red">*</span>分类</label>
@@ -74,6 +74,9 @@
         var form = layui.form;
         var slider = layui.slider;
 
+
+				typeid='{$data.typeid}';
+
         $.ajax({
             url:"{:url('admin/good/good_type_seach')}",
             type:"POST",
@@ -98,6 +101,7 @@
                     indent:16                   //相邻级节点间的水平缩进，单位为像素
                 });
                 // console.log();
+
             }
             $(".ele5").toggle();
         });
@@ -135,19 +139,19 @@
                 data:formData,
                 success:function(data){
                     console.log(data);
-                    // if (data==1) {
-                    //     layer.alert("增加成功!", {icon: 6},function () {
-                    //         //获得frame索引
-                    //         var index = parent.layer.getFrameIndex(window.name);
-                    //         //关闭当前frame
-                    //         parent.layer.close(index);
-                    //         parent.location.replace(location.href="{:url('admin/goods/goods_list')}");
-                    //     });
-                    // }else if(data==0){
-                    //     layer.alert("增加失败!", {icon: 5});
-                    // }else{
-                    //     layer.alert("上传错误:"+data, {icon: 5});
-                    // }
+                    if (data==1) {
+                        layer.alert("修改成功!", {icon: 6},function () {
+                            //获得frame索引
+                            var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            parent.layer.close(index);
+                            parent.location.replace(location.href="{:url('admin/good/good_list')}");
+                        });
+                    }else if(data==0){
+                        layer.alert("修改失败!", {icon: 5});
+                    }else{
+                        layer.alert("上传错误:"+data, {icon: 5});
+                    }
                 }
             })
         })
