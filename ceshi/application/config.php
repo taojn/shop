@@ -144,11 +144,11 @@ return [
 
     // 视图输出字符串内容替换
     'view_replace_str'       => [
-		'__ADMIN__' 		=>'/ceshi/public/static/admin',
-		'__BANNER__'		=>'/ceshi/public/static/banner',
-		'__GOOD__'			=>'/ceshi/public/static/images/good',
-		'__DETAILGOOD__'	=>'/ceshi/public/static/images/detailgood',
-		'__CITY__'			=>'/ceshi/public/static/city'
+		'__ADMIN__' 		=>'/shop/ceshi/public/static/admin',
+		'__BANNER__'		=>'/shop/ceshi/public/static/banner',
+		'__GOOD__'			=>'/shop/ceshi/public/static/images/good',
+		'__DETAILGOOD__'	=>'/shop/ceshi/public/static/images/detailgood',
+		'__CITY__'			=>'/shop/ceshi/public/static/city'
 	],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
