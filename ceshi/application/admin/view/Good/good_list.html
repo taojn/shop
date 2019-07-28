@@ -31,9 +31,9 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-body">
-                            <form class="layui-form layui-col-space5">
+                            <form class="layui-form layui-col-space5" action="">
                                 <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
-                                    <input type="text" class="layui-input" id="aa" placeholder="请选择日期范围">
+                                    <input type="text" readonly name="time" class="layui-input" id="sea_time" value="{if !empty($seachTime)}{$seachTime}{/if}" placeholder="请选择时间段">
                                 </div>
 
                                 <script>
@@ -42,22 +42,49 @@
 
                                         //执行一个laydate实例
                                         laydate.render({
-                                            elem: '#aa', //指定元素
+                                            elem: '#sea_time', //指定元素
+                                            //type参数
+                                            // year	年选择器	只提供年列表选择
+                                            // month	年月选择器	只提供年、月选择
+                                            // date	日期选择器	可选择：年、月、日。type默认值，一般可不填
+                                            // time	时间选择器	只提供时、分、秒选择
+                                            // datetime	日期时间选择器	可选择：年、月、日、时、分、秒
                                             type: 'datetime',
-                                            range: true
+                                            range: '~',       //左右面板 参数: '~'时是以'~'隔开  true时默认以'-'隔开
+                                            min: '2019-7-1 00:00:00',
+                                            mark: {
+                                                '2019-7-29': '快递'
+                                            }
                                         });
                                     });
                                 </script>
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <select name="type" lay-filter="aa">
-                                        <option value="0" >所有分类</option >
+                                    <select name="type" lay-filter="sea_type">
+                                        <option value="0" >所有分类</option>
                                         {foreach $type as $v}
-                                        <option xsla="{$nbsp = str_repeat('&nbsp;',($v.path-1)*4)}{if $v.path==3}{$str=''}{else}{$str='disabled'}{/if}" value="{$v.id}" {$str}>{$nbsp}{$v.name}</option >
+                                        <option xsla="
+                                        {$nbsp = str_repeat('&nbsp;',($v.path-1)*4)}
+                                        {if $v.path==3}
+                                            {if $seachT==$v.id}
+                                                {$str='selected'}
+                                            {else}
+                                                {$str=''}
+                                            {/if}
+                                        {else}
+                                            {$str='disabled'}
+                                        {/if}" value="{$v.id}" {$str}>{$nbsp}{$v.name}</option>
                                         {/foreach}
                                     </select>
                                 </div>
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="请输入商品名  " autocomplete="off" class="layui-input"></div>
+                                    <select name="state" lay-filter="sea_state">
+                                        <option {if $seachS==0}selected{/if} value="0" >所有状态</option>
+                                        <option {if $seachS==1}selected{/if} value="1" >在售</option>
+                                        <option {if $seachS==2}selected{/if} value="2" >下架</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline layui-show-xs-block">
+                                    <input type="text" name="name" placeholder="请输入商品名" autocomplete="off" class="layui-input" value="{if !empty($seachN)}{$seachN}{/if}"></div>
                                 <div class="layui-input-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                         <i class="layui-icon">&#xe615;</i></button>
@@ -144,31 +171,25 @@
         });
         layui.use(['form'], function(){
             form=layui.form;
-            form.on('select(aa)',function(data){
+
+            //商品类别搜索
+            form.on('select(sea_type)',function(data){
                 // console.log(data.elem); //得到select原始DOM对象
                 // console.log(data.value); //得到被选中的值
                 // console.log(data.othis); //得到美化后的DOM对象
 
                 var typeid=data.value;
+                window.location="{:url('admin/good/good_list')}?typeid="+typeid;
+            });
 
-                // $.ajax({
-                //     url:"{:url('admin/good/good_list')}",
-                //     type:"POST",
-                //     data:{typeid:typeid},
-                //     //cache: false,
-                //     // processData: false,
-                //     // contentType: false,
-                //     success:function(data){
-                //         console.log(data);
-                //         if(data==1){
-                //             layer.msg('修改成功!',{icon:1,time:1000});
-                //         }else{
-                //             layer.msg('修改失败!',{icon:2,time:1000},function(){
-                //                 location.reload();
-                //             });
-                //         }
-                //     }
-                // });
+            //商品状态搜索
+            form.on('select(sea_state)',function(data){
+                // console.log(data.elem); //得到select原始DOM对象
+                // console.log(data.value); //得到被选中的值
+                // console.log(data.othis); //得到美化后的DOM对象
+
+                var state=data.value;
+                window.location="{:url('admin/good/good_list')}?state="+state;
             });
 
             /*商品-在售/下架*/

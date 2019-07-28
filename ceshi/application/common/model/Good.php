@@ -9,6 +9,10 @@ class Good extends Model
 
 	//分页查询
 	function seach($where=[],$url=[]){
+		$i=0;
+		foreach($where as $v){
+			$i++;
+		}
 		$data=$this->where($where)->order('id desc')->paginate(15,false,$url);
 		return $data;
 	}

@@ -31,15 +31,15 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5">
+                            <form class="layui-form layui-col-space5" action="{:url('admin/admin/admin_list')}" method="post">
+<!--                                <div class="layui-inline layui-show-xs-block">-->
+<!--                                    <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">-->
+<!--                                </div>-->
+<!--                                <div class="layui-inline layui-show-xs-block">-->
+<!--                                    <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">-->
+<!--                                </div>-->
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">
-                                </div>
-                                <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">
-                                </div>
-                                <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="name"  placeholder="请输入登录名" autocomplete="off" class="layui-input">
+                                    <input type="text" name="name" value="{if(!empty($name))}{$name}{/if}" placeholder="请输入登录名" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>

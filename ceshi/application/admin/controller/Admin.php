@@ -21,28 +21,18 @@ class Admin extends Controller
 		$Role=new Role;
 		$Admin=new AdminModel;
 
-
-
-		$where_name=[];
-		$where_time=[];
-		if(empty(input('start'))){
-			$start=0;
-		}else{
-			$start=strtotime(input('start'));
-		}
-		if(empty(input('end'))){
-			$end=0;
-		}else{
-			$end=strtotime(input('end'));
-		}
+		//封装搜索条件
+		$where=array();
+		//封装url搜索条件
+		$url=array();
 		if(!empty(input('name'))){
 			$name=input('name');
+			$where['name']=array('=',"$name");
+			$url['query']['name']=$name;
+			$this->assign('name',$name);
 		}
 
-
-
-
-		$data=$Admin->seach();
+		$data=$Admin->seach($where,$url);
 		$role=$Role->seach();
 		if(!empty($role)){
 			foreach($role as $v){

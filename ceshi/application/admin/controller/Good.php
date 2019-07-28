@@ -26,9 +26,50 @@ class Good extends Controller
 		$Goodc=new Goodc;
 		$Type=new Type();
 
+		//封装搜索条件
+		$where=array();
+		//封装url搜索条件
+		$url=array();
+
+		$typeid=0;
+		$state=0;
+		//分类搜索
+		if (!empty(input('typeid'))) {
+			$typeid=input('typeid');
+			$where['typeid']=array('=',$typeid);
+			$url['query']['typeid']=$typeid;
+		}
+		//商品名搜索
+		if (!empty(input('name'))) {
+			$name=input('name');
+			$where['name']=array('=',$name);
+			$url['query']['name']=$name;
+			$this->assign('seachN',$name);
+		}
+		//商品状态搜索
+		if (!empty(input('state'))) {
+			$state=input('state');
+			$where['state']=array('=',$state);
+			$url['query']['state']=$state;
+		}
+		//商品时间的搜索
+		if (!empty(input('time'))) {
+			$time=input('time');
+			$tarr=explode(' ~ ',$time);
+			$ltime=strtotime($tarr[0]);
+			$rtime=strtotime($tarr[1]);
+
+			$where['addtime']=array(
+									array('>=',$ltime),
+									array('<',$rtime)
+									);
+			$url['query']['time']=$time;
+			$this->assign('seachTime',$time);
+		}
+
 		$type=$Type->seach();
 
-		$good=$Good->seach();
+		$good=$Good->seach($where,$url);
 		$color=$Goodc->seach();
 		$size=$Goods->seach();
 
@@ -36,6 +77,8 @@ class Good extends Controller
 		$this->assign('color',$color);
 		$this->assign('size',$size);
 		$this->assign('type',$type);
+		$this->assign('seachT',$typeid);
+		$this->assign('seachS',$state);
 
 		return $this->fetch();
 	}//end 加载商品列表页-------------------------------------------------------------------------------
