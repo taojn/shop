@@ -13,7 +13,7 @@ class Good extends Model
 		foreach($where as $v){
 			$i++;
 		}
-		$data=$this->where($where)->order('id desc')->paginate(15,false,$url);
+		$data=$this->where($where)->order('id desc')->paginate(5,false,$url);
 		return $data;
 	}
 

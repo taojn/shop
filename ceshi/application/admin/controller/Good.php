@@ -709,12 +709,20 @@ class Good extends Controller
 		$Good=new GoodModel;
 		$Type=new Type;
 
-
-		$id=input('id');
+        $getdata=input('get.');
+		$time=empty($getdata['time'])?'':$getdata['time'];
+		$typeid=empty($getdata['$typeid'])?'':$getdata['$typeid'];
+		$state=empty($getdata['$state'])?'':$getdata['$state'];
+		$name=empty($getdata['$name'])?'':$getdata['$name'];
+		$id=$getdata['id'];
 		$data=$Good->goodget($id);
-		$type=$Type->typeget($data['typeid']);
-		$this->assign('type',$type['name']);
+		$typearr=$Type->typeget($data['typeid']);
+		$this->assign('typeN',$typearr['name']);
 		$this->assign('data',$data);
+		$this->assign('time',$time);
+		$this->assign('typeid',$typeid);
+		$this->assign('state',$state);
+		$this->assign('name',$name);
 
 		return $this->fetch();
 	}//end 加载商品修改页--------------------------------------------------------------------------------------
