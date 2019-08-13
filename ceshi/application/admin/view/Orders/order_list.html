@@ -39,46 +39,97 @@
       <div class="layui-card">
         <div class="layui-card-body">
           <form class="layui-form layui-col-space5">
-            <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
-              <input type="text" class="layui-input" readonly id="aa" placeholder="请选择日期范围">
+            <div class="layui-inline">
+              <input type="text" name="time" class="layui-input" value="{if !empty($sea_time)}{$sea_time}{/if}" readonly id="sea_time" placeholder="请选择日期范围">
             </div>
 
-<!--            <div class="layui-form-item x-city" id="start">-->
-<!--              <div class="layui-input-inline">-->
-<!--                <select name="province" lay-filter="province"></select>-->
-<!--              </div>-->
-<!--              <div class="layui-input-inline">-->
-<!--                <select name="city" lay-filter="city"></select>-->
-<!--              </div>-->
-<!--              <div class="layui-input-inline">-->
-<!--                <select name="area" lay-filter="area"></select>-->
-<!--              </div>-->
-<!--            </div>-->
             <script>
-
-                layui.use(['form','code'], function(){
-                    form = layui.form;
-                    // layui.code();
-                    //
-                    // $('#start').xcity();
-
-                    // $('#end').xcity('广东','广州市','东山区');
-
-                });
-
                 layui.use('laydate', function(){
                     var laydate = layui.laydate;
 
                     //执行一个laydate实例
                     laydate.render({
-                        elem: '#aa', //指定元素
+                        elem: '#sea_time', //指定元素
                         type: 'datetime',
-                        range: true
+                        range: '~',
                     });
                 });
+
+                /**
+                 * 根据变量名获取匹配值
+                 */
+                function getQueryString(name) {
+                  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                  var r = window.location.search.substr(1).match(reg);
+                  if (r != null) return unescape(r[2]); return null;
+                }
+                //调用
+                var time=getQueryString("time")==null?null:getQueryString("time");
+                var state=getQueryString("state")==null?null:getQueryString("state");
+                var paystate=getQueryString("paystate")==null?null:getQueryString("paystate");
+                var code=getQueryString("code")==null?null:getQueryString("code");
+                var phone=getQueryString("phone")==null?null:getQueryString("phone");
+                // alert(typeof state);
+                // alert(state);
+
+                var urlstr='';
+                var stateseastr='';
+                var paystateseastr='';
+                if (time != '' && time != null){
+                  urlstr+='&time='+time;
+                  paystateseastr+='&time='+time;
+                  stateseastr+='&time='+time;
+                }
+                if (state != 0 && state != null){
+                  urlstr+='&state='+state;
+                  paystateseastr+='&state='+state;
+                }
+                if (paystate != 0 && paystate != null){
+                  urlstr+='&paystate='+paystate;
+                  stateseastr+='&paystate='+paystate;
+                }
+                if (code != null && code != '' && code != 'null'){
+                  urlstr+='&code='+code;
+                  paystateseastr+='&code='+code;
+                  stateseastr+='&code='+code;
+                }
+                if (phone != null && phone != '' && phone != 'null'){
+                  urlstr+='&phone='+phone;
+                  paystateseastr+='&phone='+phone;
+                  stateseastr+='&phone='+phone;
+                }
+                // alert(urlstr);
+                // alert(type);
+                // alert(state);
+                // alert(name);
             </script>
+
+
             <div class="layui-input-inline layui-show-xs-block">
-              <input type="text" name="username" placeholder="请输入订单号" autocomplete="off" class="layui-input"></div>
+              <select name="state" lay-filter="sea_state">
+                <option {if $sea_state==0}selected{/if} value="0" >所有订单状态</option>
+                <option {if $sea_state==1}selected{/if} value="1" >待发货</option>
+                <option {if $sea_state==2}selected{/if} value="2" >已发货</option>
+                <option {if $sea_state==3}selected{/if} value="3" >已签收</option>
+                <option {if $sea_state==4}selected{/if} value="4" >已评论</option>
+              </select>
+            </div>
+
+            <div class="layui-input-inline layui-show-xs-block">
+              <select name="paystate" lay-filter="sea_paystate">
+                <option {if $sea_paystate==0}selected{/if} value="0" >所有支付状态</option>
+                <option {if $sea_paystate==1}selected{/if} value="1" >未支付</option>
+                <option {if $sea_paystate==2}selected{/if} value="2" >已支付</option>
+              </select>
+            </div>
+
+            <div class="layui-input-inline layui-show-xs-block">
+              <input type="text" name="code" placeholder="请输入订单号" value="{if !empty($seachC)}{$seachC}{/if}" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline layui-show-xs-block">
+              <input type="text" name="phone" placeholder="联系电话" value="{if !empty($seachP)}{$seachP}{/if}" autocomplete="off" class="layui-input">
+            </div>
+
             <div class="layui-input-inline layui-show-xs-block">
               <button class="layui-btn" lay-submit="" lay-filter="sreach">
                 <i class="layui-icon">&#xe615;</i></button>
@@ -171,6 +222,45 @@
   </div>
 </div>
 <script>
+
+  layui.use(['laydate', 'form'],
+
+          function() {
+            var laydate = layui.laydate;
+
+            var form=layui.form;
+
+            //执行一个laydate实例
+            laydate.render({
+              elem: '#start' //指定元素
+            });
+
+            //执行一个laydate实例
+            laydate.render({
+              elem: '#end' //指定元素
+            });
+
+            //订单状态搜索
+            form.on('select(sea_state)',function(data){
+              // console.log(data.elem); //得到select原始DOM对象
+              // console.log(data.value); //得到被选中的值
+              // console.log(data.othis); //得到美化后的DOM对象
+              var state=data.value;
+              alert(stateseastr);
+              window.location="{:url('admin/orders/order_list')}?state="+state+stateseastr;
+            });
+
+            //订单支付状态搜索
+            form.on('select(sea_paystate)',function(data){
+              // console.log(data.elem); //得到select原始DOM对象
+              // console.log(data.value); //得到被选中的值
+              // console.log(data.othis); //得到美化后的DOM对象
+
+              var paystate=data.value;
+              alert(paystateseastr);
+              window.location="{:url('admin/orders/order_list')}?paystate="+paystate+paystateseastr;
+            });
+          });
 
     /*订单-删除*/
     function member_del(obj, id) {

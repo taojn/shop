@@ -20,13 +20,66 @@ class Orders extends Controller
 	function order_list(){
 		$Order=new Order;
 
+        //封装搜索条件
+        $where=array();
+        //封装url搜索条件
+        $url=array();
+
+        //初始化参数
+        $sea_state=0;
+        $sea_paystate=0;
+
+        //订单号搜索
+        if (!empty(input('code'))) {
+            $code=input('code');
+            $where['code']=array('=',$code);
+            $url['query']['code']=$code;
+            $this->assign('seachC',$code);
+        }
+        //联系电话搜索
+        if (!empty(input('phone'))) {
+            $phone=input('phone');
+            $where['phone']=array('=',$phone);
+            $url['query']['phone']=$phone;
+            $this->assign('seachP',$phone);
+        }
+        //订单状态搜索
+        if (!empty(input('state'))) {
+            $sea_state=input('state');
+            $where['state']=array('=',$sea_state);
+            $url['query']['state']=$sea_state;
+        }
+        //订单支付状态搜索
+        if (!empty(input('paystate'))) {
+            $sea_paystate=input('paystate');
+            $where['paystate']=array('=',$sea_paystate);
+            $url['query']['paystate']=$sea_paystate;
+        }
+        //商品时间的搜索
+        if (!empty(input('time'))) {
+            $time=input('time');
+            $tarr=explode(' ~ ',$time);
+            $ltime=strtotime($tarr[0]);
+            $rtime=strtotime($tarr[1]);
+
+            $where['addtime']=array(
+                array('>=',$ltime),
+                array('<',$rtime)
+            );
+            $url['query']['time']=$time;
+            $this->assign('sea_time',$time);
+        }
+
 		$state=[1=>'待发货',2=>'已发货',3=>'已签收',4=>'已评论'];
 		$paystate=[1=>'未支付',2=>'已支付'];
-		$data=$Order->seach();
+
+		$data=$Order->seach($where,$url);
 
 		$this->assign('data',$data);
 		$this->assign('state',$state);
 		$this->assign('paystate',$paystate);
+		$this->assign('sea_state',$sea_state);
+		$this->assign('sea_paystate',$sea_paystate);
 		return $this->fetch();
 	}//end 加载用户列表页-----------------------------------------------------------------------------
 
